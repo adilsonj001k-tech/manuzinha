@@ -15,7 +15,7 @@ app.use(express.static(currentDirectory));
 
 function requireApiKey(res) {
   if (apiKey) return true;
-  res.status(500).json({ error: { message: 'ZORYCASH_API_KEY não configurada.' } });
+  res.status(500).json({ error: { message: 'ZORYCASH_API_KEY=ak_live_80711c39ad658182f33e5a456831aeb863b5efaee1446bcfa.' } });
   return false;
 }
 
