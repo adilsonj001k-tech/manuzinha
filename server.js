@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
-const apiKey = process.env.ZORYCASH_API_KEY=ak_live_80711c39ad658182f33e5a456831aeb863b5efaee1446bcf;
+const apiKey = process.env.ZORYCASH_API_KEY;
 const zoryCashUrl = 'https://api.zorycash.com.br/api/v1';
 const currentFile = fileURLToPath(import.meta.url);
 const currentDirectory = path.dirname(currentFile);
