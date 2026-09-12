@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lojal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --roxo: #5B21B6;
+    --roxo-escuro: #3B1370;
+    --lilas: #C4B5FD;
+    --fundo: #FAF8FF;
+    --texto: #1E1533;
+    --dourado: #C9A227;
+    --branco: #FFFFFF;
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+
+  body{
+    font-family: 'Work Sans', sans-serif;
+    background: var(--fundo);
+    color: var(--texto);
+    line-height: 1.5;
+  }
+
+  h1, h2, h3{
+    font-family: 'Fraunces', serif;
+    color: var(--roxo-escuro);
+  }
+
+  header{
+    padding: 28px 6%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ECE6FB;
+  }
+
+  .marca{
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--roxo-escuro);
+  }
+
+  nav a{
+    color: var(--texto);
+    text-decoration: none;
+    margin-left: 28px;
+    font-size: 0.95rem;
+  }
+
+  .hero{
+    padding: 90px 6% 70px;
+    max-width: 900px;
+  }
+
+  .hero h1{
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    font-weight: 600;
+    line-height: 1.15;
+    max-width: 720px;
+  }
+
+  .hero p{
+    margin-top: 22px;
+    font-size: 1.15rem;
+    max-width: 520px;
+    color: #4B3D66;
+  }
+
+  section.produtos{
+    padding: 20px 6% 100px;
+  }
+
+  .produtos h2{
+    font-size: 1.9rem;
+    margin-bottom: 40px;
+  }
+
+  .grade{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+    align-items: start;
+  }
+
+  .card{
+    background: var(--branco);
+    border: 1px solid #ECE6FB;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .card.destaque{
+    background: var(--roxo);
+    color: white;
+    border: none;
+  }
+
+  .card.destaque h3, .card.destaque .preco{
+    color: white;
+  }
+
+  .selo{
+    display: inline-block;
+    font-size: 0.75rem;
+    color: var(--dourado);
+    border: 1px solid var(--dourado);
+    padding: 3px 10px;
+    width: fit-content;
+  }
+
+  .card.destaque .selo{
+    color: #F3E7B8;
+    border-color: #F3E7B8;
+  }
+
+  .card h3{
+    font-size: 1.25rem;
+  }
+
+  .card p.descricao{
+    font-size: 0.95rem;
+    color: #5B4E77;
+    flex-grow: 1;
+  }
+
+  .card.destaque p.descricao{
+    color: #E6DBFB;
+  }
+
+  .preco{
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    color: var(--roxo-escuro);
+  }
+
+  button.comprar{
+    background: var(--roxo-escuro);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    font-family: 'Work Sans', sans-serif;
+    transition: background 0.15s ease;
+  }
+
+  button.comprar:hover{ background: var(--roxo); }
+
+  .card.destaque button.comprar{
+    background: white;
+    color: var(--roxo-escuro);
+  }
+
+  .card.destaque button.comprar:hover{
+    background: #F0EAFC;
+  }
+
+  /* Modal de pagamento */
+  .overlay{
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(30, 21, 51, 0.55);
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 20px;
+  }
+
+  .overlay.ativo{ display: flex; }
+
+  .modal{
+    background: white;
+    max-width: 420px;
+    width: 100%;
+    padding: 32px;
+    position: relative;
+  }
+
+  .modal h3{
+    font-size: 1.3rem;
+    margin-bottom: 6px;
+  }
+
+  .modal .produto-nome{
+    color: #5B4E77;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+  }
+
+  .modal .valor{
+    font-family: 'Fraunces', serif;
+    font-size: 2rem;
+    color: var(--roxo);
+    margin-bottom: 20px;
+  }
+
+  #qrcode{
+    display: flex;
+    justify-content: center;
+    margin: 16px 0;
+    padding: 16px;
+    background: var(--fundo);
+  }
+
+  .copia-cola{
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .copia-cola input{
+    flex-grow: 1;
+    border: 1px solid #DCD2F5;
+    padding: 10px;
+    font-size: 0.8rem;
+    color: #5B4E77;
+    background: var(--fundo);
+  }
+
+  .copia-cola button{
+    border: 1px solid var(--roxo);
+    background: white;
+    color: var(--roxo-escuro);
+    padding: 0 16px;
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+
+  .fechar{
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #9385AD;
+  }
+
+  .aviso{
+    font-size: 0.78rem;
+    color: #8A7CA6;
+    margin-top: 18px;
+    text-align: center;
+  }
+
+  footer{
+    padding: 40px 6%;
+    text-align: center;
+    color: #8A7CA6;
+    font-size: 0.85rem;
+    border-top: 1px solid #ECE6FB;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="marca">manuzinha packs</div>
+  <nav>
+    <a href="#produtos">Produtos</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>As melhores fotos e os melhores videos.</h1>
+  <p>se satisfaca com o melhor conteudo — pagamento via Pix, na hora.</p>
+</section>
+
+<section class="produtos" id="produtos">
+  <h2>Meus produtos</h2>
+  <div class="grade">
+
+    <div class="card">
+      <h3>me conheca melhor.</h3>
+      <p class="descricao"> 3 fotos simples.</p>
+      <div class="preco">R$ 5,90</div>
+      <button class="comprar" onclick="abrirPagamento('me conheca melhor', 5.90)">Comprar</button>
+    </div>
+
+    <div class="card destaque">
+      <span class="selo">Mais vendido</span>
+      <h3>o favorito de todos</h3>
+      <p class="descricao">10 fotos e 3 videos.</p>
+      <div class="preco">R$ 59,90</div>
+      <button class="comprar" onclick="abrirPagamento('o favorito de todos', 59.90)">Comprar</button>
+    </div>
+
+    <div class="card">
+      <h3>me conheca melhor.</h3>
+      <p class="descricao">1 video simples.</p>
+      <div class="preco">R$ 12,90</div>
+      <button class="comprar" onclick="abrirPagamento('me conheca melhor.', 12.90)">Comprar</button>
+    </div>
+
+    <div class="card">
+      <h3>Pacote Completo</h3>
+      <p class="descricao">mais de 100 fotos e vídeos.</p>
+      <div class="preco">R$ 99,90</div>
+      <button class="comprar" onclick="abrirPagamento('Pacote Completo', 99.90)">Comprar</button>
+    </div>
+
+  </div>
+</section>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <button class="fechar" onclick="fecharPagamento()">×</button>
+    <h3>Pagamento via Pix</h3>
+    <div class="produto-nome" id="modalProduto">Produto</div>
+    <div class="valor" id="modalValor">R$ 0,00</div>
+    <div id="qrcode"></div>
+    <div class="copia-cola">
+      <input type="text" id="pixCopiaCola" readonly>
+      <button onclick="copiarPix()">Copiar</button>
+    </div>
+    <p class="aviso">Escaneie o QR Code ou copie o código Pix no seu app do banco. Após o pagamento, envie o comprovante para liberar o acesso.</p>
+  </div>
+</div>
+
+<footer>
+  <manu-conteudos> — pagamentos processados via Pix.
+</footer>
+
+<script>
+async function abrirPagamento(nomeProduto, valor){
+  document.getElementById('modalProduto').innerText = nomeProduto;
+  document.getElementById('modalValor').innerText = 'R$ ' + valor.toFixed(2).replace('.', ',');
+  document.getElementById('pixCopiaCola').value = 'Gerando cobrança...';
+  document.getElementById('qrcode').innerHTML = '';
+  document.getElementById('overlay').classList.add('ativo');
+
+  try {
+    const resposta = await fetch('/api/pix/charge', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        amount_cents: Math.round(valor * 100),
+        external_ref: 'pedido_' + Date.now(),
+        description: nomeProduto
+      })
+    });
+    const dados = await resposta.json();
+
+    if (!resposta.ok) {
+      throw new Error(dados.error?.message || 'Não foi possível gerar a cobrança.');
+    }
+
+    document.getElementById('pixCopiaCola').value = dados.pix.copy_paste;
+    if (dados.pix.qr_code_image) {
+      document.getElementById('qrcode').innerHTML = '<img alt="QR Code Pix" width="200" height="200">';
+      document.querySelector('#qrcode img').src = dados.pix.qr_code_image;
+    }
+  } catch (erro) {
+    document.getElementById('pixCopiaCola').value = '';
+    document.getElementById('qrcode').innerHTML = '';
+    alert(erro.message);
+  }
+}
+
+function fecharPagamento(){
+  document.getElementById('overlay').classList.remove('ativo');
+}
+
+function copiarPix(){
+  const campo = document.getElementById('pixCopiaCola');
+  if (!campo.value) return;
+  campo.select();
+  document.execCommand('copy');
+  alert('Código Pix copiado!');
+}
+</script>
+
+</body>
+</html>
